@@ -1,18 +1,22 @@
 const express = require("express");
 const app = express();
 const scraper = require("./scraper.js");
-const LocalStorage = require("node-localstorage").LocalStorage;
+const ejs = require("ejs");
+
+app.set("view engine","ejs");
+app.use(express.static('public'));
+app.use(express.urlencoded({extended:'true'}));
 
 app.get("/",(req,res)=>{
-	res.json({
-	message:"scraping is fun"
-	})
+	res.render("index.ejs");
 })
 
-app.get("/search/:searchTerm", (req,res)=>{
-	let parsedSearchTerm = req.params.searchTerm.replace(/ /g,"+");
+
+app.get("/search", (req,res)=>{
+
+	const parsedSearchTerm = req.query.searchTerm.replace(/ /g,"+");
 	const items = [];
-	let promises=[];
+	const promises=[];
 
 	scraper
 		.getIDS(parsedSearchTerm)
@@ -23,7 +27,7 @@ app.get("/search/:searchTerm", (req,res)=>{
 									.then(data=>items.push(data))
 					);
 					})
-					Promise.all(promises).then((results)=>{
+					Promise.all(promises).then(()=>{
 						res.json(items);	
 					});
 			});

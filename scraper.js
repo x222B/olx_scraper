@@ -1,6 +1,5 @@
 const got = require("got")
 const cheerio = require("cheerio");
-const fs = require("fs");
 
 const baseURL = "https://www.olx.ba/pretraga?trazilica=";
 
