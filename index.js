@@ -13,13 +13,21 @@ app.get("/",(req,res)=>{
 
 
 app.get("/search", (req,res)=>{
+	
+	const parsedSearchTerm = req.query.searchTerm.replace(/ /g,"+");
+	const items = [];
+	scraper.miniSearch(parsedSearchTerm)
+			.then(data=>res.render("results",{data:data}))
 
+})
+
+app.get("/bigSearch",(req,res)=>{
+		
 	const parsedSearchTerm = req.query.searchTerm.replace(/ /g,"+");
 	const items = [];
 	const promises=[];
 
-	scraper
-		.getIDS(parsedSearchTerm)
+	scraper.getIDS(parsedSearchTerm)
 			.then((ids)=>{
 					ids.forEach(id=>{
 						promises.push(scraper
@@ -28,10 +36,12 @@ app.get("/search", (req,res)=>{
 					);
 					})
 					Promise.all(promises).then(()=>{
-						res.json(items);	
+						//data=JSON.stringify(items);
+						res.render("results",{data:items});
+						//res.json(items);	
 					});
 			});
-	})
+})
 
 const port = process.env.PORT || 3000;
 app.listen(port, ()=>{
