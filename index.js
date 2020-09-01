@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const scraper = require("./scraper.js");
+const LocalStorage = require("node-localstorage").LocalStorage;
 
 app.get("/",(req,res)=>{
 	res.json({
@@ -8,14 +9,25 @@ app.get("/",(req,res)=>{
 	})
 })
 
-app.get("/search/:title", (req,res)=>{
-	let parsedTitle = req.params.title.replace(/ /g,"+");
+app.get("/search/:searchTerm", (req,res)=>{
+	let parsedSearchTerm = req.params.searchTerm.replace(/ /g,"+");
+	const items = [];
+	let promises=[];
+
 	scraper
-		.miniSearch(parsedTitle)
-		.then(items=>{
-			res.json(items);
-		})
-})
+		.getIDS(parsedSearchTerm)
+			.then((ids)=>{
+					ids.forEach(id=>{
+						promises.push(scraper
+								.getData(id)
+									.then(data=>items.push(data))
+					);
+					})
+					Promise.all(promises).then((results)=>{
+						res.json(items);	
+					});
+			});
+	})
 
 const port = process.env.PORT || 3000;
 app.listen(port, ()=>{
