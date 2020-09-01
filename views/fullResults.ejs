@@ -19,13 +19,14 @@
 	<%	}							%>
 	<%})							%>
 	<%console.log(parameters);			%>
-
 			<table class="table table-hover">
+			<tr class="table-primary">
 			<%for(k in parameters){%>
 				<th><%=parameters[k]%></th>
 			<%}%>
+			</tr>
 		<%data.forEach((item)=>{%>
-		<tr>
+		<tr class="table-dark">
 		<%		for(p in parameters){%>
 					<td><%=item[parameters[p]]%></td>
 				<%}%>

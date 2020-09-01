@@ -4,7 +4,7 @@ const cheerio = require("cheerio");
 const baseURL = "https://www.olx.ba/pretraga?trazilica=";
 
 
-async function miniSearch(searchTerm){
+async function simpleSearch(searchTerm){
 
 	const results = [];
 	let page = 1;
@@ -117,30 +117,29 @@ async function getData (id){
 }
 
 
-async function bigSearch (searchTerm){
-	
-	let results=[];
-	let page = 1;
-
-
-
-	async function bla(){
-		const ids = await getIDS(searchTerm);
-		await ids.forEach(async(id)=>{
-			const item = await getData(id);
-			results.push(item);
-		})
-		return results;
-	}
-
-	bla().then((thing)=>{console.log(results)});
-
-	
-}
+//async function fullSearch (searchTerm){
+//	
+//	let results=[];
+//	let page = 1;
+//
+//
+//
+//	async function bla(){
+//		const ids = await getIDS(searchTerm);
+//		await ids.forEach(async(id)=>{
+//			const item = await getData(id);
+//			results.push(item);
+//		})
+//		return results;
+//	}
+//
+//	bla().then((thing)=>{console.log(results)});
+//
+//	
+//}
 
 module.exports = {
-	miniSearch,
 	getIDS,
 	getData,
-	bigSearch
+	simpleSearch
 };
