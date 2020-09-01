@@ -1,34 +1,36 @@
 <%- include("./partials/header")%>
 <div>
 <br>
+
 <%if(data===undefined){%>
 	<p class="text-danger">Search box cannot be empty!</p>
 <%}else{%>
 	<%if(data.length===0){%>
 		<p class="text-danger">No results found!</p>
 	<%}else{%>
-			<p class="text muted">Retrieved <strong><%=data.length%></strong> items</p>
-			<table class="table table-hover">
-			<thead>
-				<tr class="table-primary">
-					<th scope="col">Title</th>
-					<th scope="col">Price</th>
-					<th scope="col">Date Added</th>
-					<th scope="col">Link</th>
-					<th scope="col">OLX ID</th>
-				</tr>
-			</thead>
-				<%for(let k in data){%>
-				<tr class="table-dark">
-					<td><%=data[k].title%></td>
-					<td><%=data[k].price%></td>
-					<td><%=data[k].dateAdded%></td>
-					<td><a href="<%=data[k].link%>">[link]</a></td>
-					<td><%=data[k].olx_ID%></td>
-				</tr>
-				<%}%>
-			</table>
-			</div>
+
+		<p class="text muted">Retrieved <strong><%=data.length%></strong> items</p>
+		<table class="table table-hover">
+		<thead>
+			<tr class="table-primary">
+				<th scope="col">Title</th>
+				<th scope="col">Price</th>
+				<th scope="col">Date Added</th>
+				<th scope="col">Link</th>
+				<th scope="col">OLX ID</th>
+			</tr>
+		</thead>
+			<%for(let k in data){%>
+			<tr class="table-dark">
+				<td><%=data[k].title%></td>
+				<td><%=data[k].price%></td>
+				<td><%=data[k].dateAdded%></td>
+				<td><a href="<%=data[k].link%>">[link]</a></td>
+				<td><%=data[k].olx_ID%></td>
+			</tr>
+			<%}%>
+		</table>
 	<%}%>
 <%}%>
+</div>
 <%- include('./partials/footer')%>

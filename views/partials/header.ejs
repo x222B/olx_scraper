@@ -11,20 +11,26 @@
 <div id="heading">
 	<h1><strong><span id="o"> O</span><span id="l">L</span><span id="x">X</span></strong>.ba Scraper</h1>
 	<form method="GET" action="/search/" class="form-inline my-2 my-lg-0">
-		<div id="test">
-		<input class="form-control mr-sm-2" type="text" placeholder="Search..." name="searchTerm">
-		<button type="submit" class="btn btn-primary">Search</button>
-      		  <label class="form-check-label">
-      		    <input type="radio" class="form-check-input" name="dataType" id="optionsRadios1" value="simple" checked="">
-      		    Get simplified data
-      		  </label>
-      		  <label class="form-check-label">
-      		    <input type="radio" class="form-check-input" name="dataType" id="optionsRadios2" value="full">
-      		    Get full data
-      		  </label>
+
+		<div id="input">
+			<input class="form-control mr-sm-2" type="text" placeholder="Search..." name="searchTerm">
+			<button type="submit" class="btn btn-primary">Search</button>
+
+      			<label class="form-check-label">
+      			  <input type="radio" class="form-check-input" name="dataType" id="optionsRadios1" value="simple" checked="">
+      			  Simplified data
+      			</label>
+
+      			<label class="form-check-label">
+      			  <input type="radio" class="form-check-input" name="dataType" id="optionsRadios2" value="full">
+      			  Complete data
+      			</label>
 		</div>
+
 	</form>
 	<br>
-	<p class="text-warning"><em>NOTE: The scraper waits before retrieving each item, as to not flood the server with requests.</em></p>
+
+	<p class="text-warning"><em>NOTE: For 'Complete Data' the scraper has to send a separate GET request for each item, so it can take a while.</em></p>
+	<p class="text-warning"><em>Try to be as specific as you can to narrow down the search results.</em></p>
 	<p class="text-warning"><em>If there are many items to retrieve, it may take a long time. Be patient.</em></p>
 </div>

@@ -8,7 +8,7 @@ async function simpleSearch(searchTerm){
 
 	const results = [];
 	let page = 1;
-	let search =true;
+	let search = true;
 
 	while(search==true){
 
@@ -21,7 +21,7 @@ async function simpleSearch(searchTerm){
 
 			console.log(`Scraping '${searchTerm.replace(/\+/g," ")}' on page ${page}`);
 
-			$('div.artikal:has(>a)').each(function(i,element){
+			$('div.artikal:has(>a)').each((i,element)=>{
 
 				$element = $(element);
 				$link = $element.find('a');
@@ -39,8 +39,9 @@ async function simpleSearch(searchTerm){
 				results.push(result);
 			});
 			page++;
+
 		} else {
-			console.log(`Successfully craped ${results.length} items.`); 
+			console.log(`Successfully scraped ${results.length} items.`); 
 			search=false;
 		}
 	}
@@ -51,92 +52,72 @@ async function simpleSearch(searchTerm){
 async function getIDS (searchTerm) {
 
 	let page=1;
-	console.log("getting item ids");
+	console.log("Retrieving item ids");
 	const itemIDS = [];
 	
 	let search=true;
 
 	while(search===true){
 
-	const fullURL = `${baseURL}${searchTerm}&stranica=${page}`;
-	const data = await got(`${fullURL}`);
-	const html = await data.body;
-	const $ = cheerio.load(html);
-		if($('div.artikal:has(>a)').length){
+		const fullURL = `${baseURL}${searchTerm}&stranica=${page}`;
+		const data = await got(`${fullURL}`);
+		const html = await data.body;
+		const $ = cheerio.load(html);
 
-			$('div.artikal:has(>a)').each(function(i,element){
-				$element = $(element);
-				$link = $element.find('a');
-				const ID = $link.attr('href').match(/artikal\/(.*?)\//)[1];
-				itemIDS.push(ID);
-
-			});
-			page++;
-		} else {
-			console.log(`succesfully got ${itemIDS.length}`);
-			search=false;
-		}
-
+			if($('div.artikal:has(>a)').length){
+				console.log(`Scraping page ${page}`)
+				$('div.artikal:has(>a)').each(function(i,element){
+					$element = $(element);
+					$link = $element.find('a');
+					const ID = $link.attr('href').match(/artikal\/(.*?)\//)[1];
+					itemIDS.push(ID);
+				});
+				page++;
+			} else {
+				console.log(`Found ${itemIDS.length} items`);
+				search=false;
+			}
 	}
-
 	return itemIDS;
 }
 
 async function getData (id){
-	
-	try {
-
 	const fullURL = `https://www.olx.ba/artikal/${id}`;
 	const data = await got(`${fullURL}`);
 	const html = await data.body;
 	const $ = cheerio.load(html);
-
-
-	const title = $('#naslovartikla');
-	const price = $('.mobile-cijena p:has(>span.markadesno)');
-
-	const itemData = {
-		"Naslov": `${title.text().trim()}`,
-		"Cijena": `${price.text().trim()}`
-	};
-
-	$('div.df').each(function(i,element){
-		$element = $(element);
-		$title = $element.find('.df1').text().trim();
-		$value = $element.find('.df2').text().trim();
-		if($title!==false){
-			itemData[$title]=`${$value}`;
-		} 
-	})
+	let itemData={};
+	try{
+		console.log(`Fetching data for [${id}]`)
+		const title = $('#naslovartikla');
+		const price = $('div#pc')[0];
 	
-	return itemData;
+		itemData = {
+			"Naslov": `${title.text().trim()}`,
+			"Cijena": `${price.text().trim()}`
+		}
 
-	} catch(err) {
+
+		
+
+	
+		$('div#dodatnapolja1 div.df').each(function(i,element){
+			$element = $(element);
+			$title = $element.find(".df1").text();
+			$value = $element.find(".df2").text();
+			if($value==''){
+				$value="DA";
+			}
+			itemData[$title]=`${$value}`;
+		})
+		
+
+	} catch(err){
 		console.log(err);
 	}
+	
+	return itemData;
 }
-
-
-//async function fullSearch (searchTerm){
-//	
-//	let results=[];
-//	let page = 1;
-//
-//
-//
-//	async function bla(){
-//		const ids = await getIDS(searchTerm);
-//		await ids.forEach(async(id)=>{
-//			const item = await getData(id);
-//			results.push(item);
-//		})
-//		return results;
-//	}
-//
-//	bla().then((thing)=>{console.log(results)});
-//
-//	
-//}
 
 module.exports = {
 	getIDS,

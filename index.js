@@ -36,12 +36,14 @@ app.get("/search", (req,res)=>{
 		} else  {
 		scraper.getIDS(parsedSearchTerm)
 				.then((ids)=>{
+						console.log(`Fetching data for ${ids.length} items`);
 						ids.forEach(id=>{
 							promises.push(scraper.getData(id)
 										.then(data=>items.push(data))
 							);
 					})
 					Promise.all(promises).then(()=>{
+						console.log("Fetching completed. Displaying in browser...");
 						res.render("fullResults",{data:items});
 					});
 			});
@@ -49,6 +51,12 @@ app.get("/search", (req,res)=>{
 	} else {
 		console.log("radio error");
 	}
+})
+
+
+app.get("/test",(req,res)=>{
+	scraper.getData("39554637").then((data)=>res.render("fullResults",{data:data}));
+
 })
 
 const port = process.env.PORT || 3000;
