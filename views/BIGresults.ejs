@@ -1,0 +1,38 @@
+<%- include("./partials/header")%>
+<div>
+<br>
+<%if(data===undefined){%>
+	<p class="text-danger">Search box cannot be empty!</p>
+<%}else{%>
+	<%if(data.length===0){%>
+		<p class="text-danger">No results found!</p>
+	<%}else{%>
+
+	<%let parameters=[];					%>
+	<%data.forEach((item)=>{				%>
+	<%	for(key in item){						%>
+	<%		if(parameters.includes(key)){			%>
+	<%			break;			%>
+	<%		} else {					%>
+	<%			parameters.push(key);			%>
+	<%		}							%>
+	<%	}							%>
+	<%})							%>
+	<%console.log(parameters);			%>
+
+			<table class="table table-hover">
+			<%for(k in parameters){%>
+				<th><%=parameters[k]%></th>
+			<%}%>
+		<%data.forEach((item)=>{%>
+		<tr>
+		<%		for(p in parameters){%>
+					<td><%=item[parameters[p]]%></td>
+				<%}%>
+		</tr>
+		<%})%>
+			</table>
+			</div>
+	<%}%>
+<%}%>
+<%- include('./partials/footer')%>
