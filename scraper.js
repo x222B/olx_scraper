@@ -90,16 +90,14 @@ async function getData (id){
 	try{
 		console.log(`Fetching data for [${id}]`)
 		const title = $('#naslovartikla');
-		const price = $('div#pc')[0];
+		const priceTitle = $('div#pc p.n');
+		const priceValue = $('div#pc p.n + p');
+		console.log(priceValue);
 	
 		itemData = {
 			"Naslov": `${title.text().trim()}`,
-			"Cijena": `${price.text().trim()}`
+			"Cijena": `${priceValue.text().trim()}`
 		}
-
-
-		
-
 	
 		$('div#dodatnapolja1 div.df').each(function(i,element){
 			$element = $(element);

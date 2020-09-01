@@ -1,5 +1,5 @@
 <%- include("./partials/header")%>
-
+<%data=items2.data;%>
 <div>
 <br>
 <%if(data===undefined){%>
@@ -19,6 +19,16 @@
 				<%}%>
 			<%}%>
 		<%})%>
+
+<%newData=JSON.stringify(data)%>
+	<form method="post" action="/search/save" class="form-inline my-2 my-lg-0">
+	<input name="data" value="<%=newData%>" style="display:none">
+	<input name="type" value="full" style="display:none">
+		<button type="submit"class="btn btn-success">Save as JSON</button>
+	</form>
+	<%if(items2.saved===true){%>
+	<p class="text-success">Data saved to [data.json]</p>
+	<%}%>
 
 		<p class="text muted">Retrieved <strong><%=data.length%></strong> items</p>
 		<!--Makes the tables-->

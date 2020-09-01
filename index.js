@@ -23,7 +23,7 @@ app.get("/search", (req,res)=>{
 			res.render("simpleResults",{data:undefined})
 		} else  {
 			scraper.simpleSearch(parsedSearchTerm)
-					.then(data=>res.render("simpleResults",{data:data}))
+					.then(data=>res.render("simpleResults",{items:{data:data,saved:false}}))
 		}
 
 	} else if(req.query.dataType==='full'){
@@ -44,7 +44,7 @@ app.get("/search", (req,res)=>{
 					})
 					Promise.all(promises).then(()=>{
 						console.log("Fetching completed. Displaying in browser...");
-						res.render("fullResults",{data:items});
+						res.render("fullResults",{items2:{data:items,saved:false}});
 					});
 			});
 		}
@@ -54,8 +54,36 @@ app.get("/search", (req,res)=>{
 })
 
 
-app.get("/test",(req,res)=>{
-	scraper.getData("39554637").then((data)=>res.render("fullResults",{data:data}));
+app.post("/search/save",(req,res)=>{
+		fs.writeFile("data.json",req.body.data,(err)=>{
+			console.log("Data saved to [data.json]");
+			if(req.body.type==="full"){
+				res.render("fullResults",{items2:{data:JSON.parse(req.body.data),saved:true}});
+			}else {
+				res.render("simpleResults",{items:{data:JSON.parse(req.body.data),saved:true}});
+			}
+		if(err){
+			console.log(err);
+		}	
+		})
+		//fileName = req.query.searchTerm + ".json";
+		//let fullitems='[';
+		//items.forEach((item)=>{
+		//	item=JSON.stringify(item);
+		//	fullitems+=item+',';
+		//})
+
+		//fullitems=fullitems.slice(0,-1);
+		//fullitems+=']';
+		//fullitems=JSON.stringify(fullitems);
+		//res.json(fullitems);
+
+		//fs.writeFile(fileName,fullitems,(err)=>{
+		//	if(err){
+		//		return console.log(err);
+		//	}
+		//console.log("The file was saved! ["+ fileName+"]");
+		//})
 
 })
 
