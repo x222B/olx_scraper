@@ -23,6 +23,7 @@ app.get("/search", (req,res)=>{
 				.then(data=>res.render("results",{data:data}))
 		}
 })
+
 app.get("/test",(req,res)=>{
 	const parsedSearchTerm = req.query.searchTerm.replace(/ /g,"+");
 	const items = [];
@@ -55,12 +56,29 @@ app.get("/bigSearch",(req,res)=>{
 					);
 					})
 					Promise.all(promises).then(()=>{
-						//data=JSON.stringify(items);
-						res.render("results",{data:items});
-						//res.json(items);	
+						//fileName = req.query.searchTerm + ".json";
+						//let fullitems='[';
+						//items.forEach((item)=>{
+						//	item=JSON.stringify(item);
+						//	fullitems+=item+',';
+						//})
+
+						//fullitems=fullitems.slice(0,-1);
+						//fullitems+=']';
+						//fullitems=JSON.stringify(fullitems);
+						res.render("BIGresults.ejs",{data:items});
+						//res.json(fullitems);
+
+					//	fs.writeFile(fileName,fullitems,(err)=>{
+					//		if(err){
+					//			return console.log(err);
+					//		}
+					//	console.log("The file was saved! ["+ fileName+"]");
+					//	})
 					});
 			});
 })
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, ()=>{

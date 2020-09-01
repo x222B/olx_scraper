@@ -96,8 +96,8 @@ async function getData (id){
 	const price = $('.mobile-cijena p:has(>span.markadesno)');
 
 	const itemData = {
-		Naslov: `${title.text().trim()}`,
-		Cijena: `${price.text().trim()}`
+		"Naslov": `${title.text().trim()}`,
+		"Cijena": `${price.text().trim()}`
 	};
 
 	$('div.df').each(function(i,element){
