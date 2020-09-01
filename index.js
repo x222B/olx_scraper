@@ -6,7 +6,8 @@ const fs = require("fs");
 
 app.set("view engine","ejs");
 app.use(express.static('public'));
-app.use(express.urlencoded({extended:'true'}));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 
 app.get("/",(req,res)=>{
 	res.render("index");
@@ -66,24 +67,6 @@ app.post("/search/save",(req,res)=>{
 			console.log(err);
 		}	
 		})
-		//fileName = req.query.searchTerm + ".json";
-		//let fullitems='[';
-		//items.forEach((item)=>{
-		//	item=JSON.stringify(item);
-		//	fullitems+=item+',';
-		//})
-
-		//fullitems=fullitems.slice(0,-1);
-		//fullitems+=']';
-		//fullitems=JSON.stringify(fullitems);
-		//res.json(fullitems);
-
-		//fs.writeFile(fileName,fullitems,(err)=>{
-		//	if(err){
-		//		return console.log(err);
-		//	}
-		//console.log("The file was saved! ["+ fileName+"]");
-		//})
 
 })
 
@@ -91,26 +74,3 @@ const port = process.env.PORT || 3000;
 app.listen(port, ()=>{
 	console.log(`listening on ${port}`);
 })
-
-
-
-
-
-						//fileName = req.query.searchTerm + ".json";
-						//let fullitems='[';
-						//items.forEach((item)=>{
-						//	item=JSON.stringify(item);
-						//	fullitems+=item+',';
-						//})
-
-						//fullitems=fullitems.slice(0,-1);
-						//fullitems+=']';
-						//fullitems=JSON.stringify(fullitems);
-						//res.json(fullitems);
-
-					//	fs.writeFile(fileName,fullitems,(err)=>{
-					//		if(err){
-					//			return console.log(err);
-					//		}
-					//	console.log("The file was saved! ["+ fileName+"]");
-					//	})
