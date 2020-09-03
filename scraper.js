@@ -3,25 +3,26 @@ const cheerio = require("cheerio");
 
 const baseURL = "https://www.olx.ba/pretraga?trazilica=";
 
-
+// Gets data that is available on the results page
 async function simpleSearch(searchTerm){
-
 
 	const results = [];
 	let page = 1;
 	let search = true;
-
+    // Searches every page as long as there are results on the page
 	while(search==true){
 
+        // Loads the html into cheerio
 		const fullURL = `${baseURL}${searchTerm}&stranica=${page}`;
 		const data = await got(`${fullURL}`);
 		const html = await data.body;
 		const $ = cheerio.load(html);
 
+        // Checks if there is content on the page
 		if($('div.artikal:has(>a)').length){
 
 			console.log(`Scraping '${searchTerm.replace(/\+/g," ")}' on page ${page}`);
-
+            // Saves data from every element into array
 			$('div.artikal:has(>a)').each((i,element)=>{
 
 				$element = $(element);
@@ -39,9 +40,11 @@ async function simpleSearch(searchTerm){
 				}
 				results.push(result);
 			});
+            // Go to next page
 			page++;
 
 		} else {
+            // If there is not content on the page, stop
 			console.log(`Successfully scraped ${results.length} items.`); 
 			search=false;
 		}
@@ -49,23 +52,23 @@ async function simpleSearch(searchTerm){
 	return results;
 };
 
-
+// Gets the OLX ID for every item
 async function getIDS (searchTerm) {
-
 
 	let page=1;
 	console.log("Retrieving item IDs");
 	const itemIDS = [];
 	
 	let search=true;
-
+    // Searches every page that has content
 	while(search===true){
 
+        // Loads the html into cheerio
 		const fullURL = `${baseURL}${searchTerm}&stranica=${page}`;
 		const data = await got(`${fullURL}`);
 		const html = await data.body;
 		const $ = cheerio.load(html);
-
+            // Cheks if the page has content
 			if($('div.artikal:has(>a)').length){
 				console.log(`Scraping page ${page}`)
 				$('div.artikal:has(>a)').each(function(i,element){
@@ -83,13 +86,16 @@ async function getIDS (searchTerm) {
 	return itemIDS;
 }
 
+// Gets data for a given ID
 async function getData (id){
 
 	const fullURL = `https://www.olx.ba/artikal/${id}`;
 	const data = await got(`${fullURL}`);
 	const html = await data.body;
 	const $ = cheerio.load(html);
+
 	let itemData={};
+
 	try{
 		console.log(`Parsing data for [${id}]`)
 		const title = $('#naslovartikla');
@@ -110,7 +116,6 @@ async function getData (id){
 			}
 			itemData[$title]=`${$value}`;
 		})
-		
 
 	} catch(err){
 		console.log(err);
