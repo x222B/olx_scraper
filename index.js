@@ -7,12 +7,14 @@ const fs = require("fs");
 app.set("view engine","ejs");
 app.use(express.static('public'));
 app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
+app.use(express.urlencoded({extended:'true',limit: '50mb'}));
 
 app.get("/",(req,res)=>{
 	res.render("index");
 })
 
+const simpleCache={};
+const fullCache={};
 
 app.get("/search", (req,res)=>{
 
@@ -20,39 +22,55 @@ app.get("/search", (req,res)=>{
 
 	if(req.query.dataType==='simple'){
 
-		if(req.query.searchTerm==''){
-			res.render("simpleResults",{data:undefined})
-		} else  {
-			scraper.simpleSearch(parsedSearchTerm)
-					.then(data=>res.render("simpleResults",{items:{data:data,saved:false}}))
-		}
+        if(simpleCache[parsedSearchTerm]){
+            console.log("Serving from cache");
+            res.render("simpleResults",{items:{data:simpleCache[parsedSearchTerm],saved:false}});
+        } else {
 
-	} else if(req.query.dataType==='full'){
+		    if(req.query.searchTerm==''){
+		    	res.render("simpleResults",{data:undefined})
+		    } else  {
+		    	scraper.simpleSearch(parsedSearchTerm)
+		    			.then((data)=>{
+                            simpleCache[parsedSearchTerm]=data;
+                            res.render("simpleResults",{items:{data:data,saved:false}});
+                        })
+		    }
+        }
 
-		const items = [];
-		const promises=[];
+	} else if (req.query.dataType==='full'){
 
-		if(req.query.searchTerm==''){
-			res.render("fullResults",{data:undefined})
-		} else  {
-		scraper.getIDS(parsedSearchTerm)
-				.then((ids)=>{
-						console.log(`Fetching data for ${ids.length} items`);
-						ids.forEach(id=>{
-							promises.push(scraper.getData(id)
-										.then(data=>items.push(data))
-							);
-					})
-					Promise.all(promises).then(()=>{
-						console.log("Fetching completed. Displaying in browser...");
-						res.render("fullResults",{items2:{data:items,saved:false}});
-					});
-			});
-		}
-	} else {
-		console.log("radio error");
-	}
+        if(fullCache[parsedSearchTerm]){
+            console.log("Serving from cache");
+			res.render("fullResults",{items2:{data:fullCache[parsedSearchTerm],saved:false}});
+        } else {
+
+		    const items = [];
+		    const promises=[];
+
+		    if(req.query.searchTerm==''){
+		    	res.render("fullResults",{data:undefined})
+		    } else  {
+
+		        scraper.getIDS(parsedSearchTerm)
+		        		.then((ids)=>{
+		        				console.log(`Fetching data for ${ids.length} items`);
+		        				ids.forEach(id=>{
+		        					promises.push(scraper.getData(id)
+		        								.then(data=>items.push(data)));
+		        								console.log(`Fetching data for [${id}]`)
+		        			})
+		        			Promise.all(promises).then(()=>{
+		        				console.log("Fetching completed. Displaying in browser...");
+                                fullCache[parsedSearchTerm]=items;
+		        				res.render("fullResults",{items2:{data:items,saved:false}});
+		        			});
+		        	});
+		    }
+        }
+    }
 })
+
 
 
 app.post("/search/save",(req,res)=>{

@@ -6,6 +6,7 @@ const baseURL = "https://www.olx.ba/pretraga?trazilica=";
 
 async function simpleSearch(searchTerm){
 
+
 	const results = [];
 	let page = 1;
 	let search = true;
@@ -51,8 +52,9 @@ async function simpleSearch(searchTerm){
 
 async function getIDS (searchTerm) {
 
+
 	let page=1;
-	console.log("Retrieving item ids");
+	console.log("Retrieving item IDs");
 	const itemIDS = [];
 	
 	let search=true;
@@ -82,13 +84,14 @@ async function getIDS (searchTerm) {
 }
 
 async function getData (id){
+
 	const fullURL = `https://www.olx.ba/artikal/${id}`;
 	const data = await got(`${fullURL}`);
 	const html = await data.body;
 	const $ = cheerio.load(html);
 	let itemData={};
 	try{
-		console.log(`Fetching data for [${id}]`)
+		console.log(`Parsing data for [${id}]`)
 		const title = $('#naslovartikla');
 		const priceTitle = $('div#pc p.n');
 		const priceValue = $('div#pc p.n + p');
